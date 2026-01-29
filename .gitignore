@@ -38,13 +38,19 @@ env/
 .AppleDouble
 .LSOverride
 
-# Experiment outputs (large files)
-tournament_results_batch.txt
+# Vector databases (regenerated at runtime)
+vector_db_active/
 simple_vector_db_clean/
 
-# Note: mock_internet/clean/ is tracked as it's the corpus data
-# If you want to exclude scraped data, uncomment the line below:
-# mock_internet/
+# Experiment outputs (generated at runtime)
+logs/
+tournament_results_batch.txt
+
+# Snapshot folders (created by setup, user edits them)
+# Uncomment to exclude from git (recommended for large datasets)
+# experiments_snapshots/
+
+# Note: mock_internet/clean/ is tracked as it's the baseline corpus data
 
 # Jupyter Notebooks
 .ipynb_checkpoints/
