@@ -159,6 +159,9 @@ Results are saved as CSV files in `logs/`. Key columns:
 ## Common Commands
 
 ```bash
+# Clean up all runtime files (start fresh)
+./cleanup.sh
+
 # Setup experiment folders (do this once)
 python run_pipeline.py --setup
 
