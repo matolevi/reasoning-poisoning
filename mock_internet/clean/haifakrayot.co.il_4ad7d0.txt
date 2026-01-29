@@ -1,0 +1,505 @@
+SOURCE_URL: https://haifakrayot.co.il/business/n/16179
+--------------------------------------------------
+דירוג מוניות באזור חיפה והקריות - 911 המלצות, ביקורות ותלונות - מדד חיפה והקריות
+(function() {
+if (typeof jQuery === 'undefined') return;
+var $ = jQuery;
+var origHtml = $.fn.html;
+$.fn.html = function() {
+if (this.length === 0 && arguments.length === 0) return '';
+return origHtml.apply(this, arguments);
+};
+})();
+var hkbiz_ajax = {"url":"https://haifakrayot.co.il/business/wp-admin/admin-ajax.php","nonce":"5b406b3396"};
+//# sourceURL=jquery-core-js-extra
+https://haifakrayot.co.il/business/wp-includes/js/jquery/jquery.min.js
+jQuery(document).ready(function($) {
+function loadBadges() {
+// מצא את כל כרטיסי העסקים - רק ברשימות (לא בעמוד בודד)
+$('.lf-item, .listing-preview').each(function() {
+var card = $(this);
+if (card.data('badges-loaded')) return;
+card.data('badges-loaded', true);
+// מצא את ה-ID של העסק
+var link = card.find('a[href*="/biz/"]').first().attr('href');
+if (!link) return;
+var postId = card.data('id') || card.attr('data-id');
+// אם אין ID, ננסה למצוא דרך ה-link
+if (!postId) {
+$.ajax({
+url: 'https://haifakrayot.co.il/business/wp-admin/admin-ajax.php',
+type: 'POST',
+data: {
+action: 'get_listing_badges',
+url: link
+},
+success: function(response) {
+if (response.success && response.data.html) {
+// הוסף רק בתוך הכרטיס - מיקומים ספציפיים בלבד
+var logo = card.find('.lf-item-cover, .listing-preview-gallery, .lf-background, .listing-logo').first();
+var infoArea = card.find('.lf-item-info, .listing-info, .item-content').first();
+if (logo.length) {
+logo.after(response.data.html);
+} else if (infoArea.length) {
+infoArea.prepend(response.data.html);
+} else {
+card.prepend(response.data.html);
+}
+}
+}
+});
+}
+});
+}
+// טען בטעינת דף
+loadBadges();
+// טען גם אחרי AJAX (infinite scroll, filters, etc)
+$(document).ajaxComplete(function() {
+setTimeout(loadBadges, 500);
+});
+});jQuery(document).ready(function($) {
+function setupCategoryLimits() {
+// פונקציה להגבלת קטגוריות
+function limitCategories(container, items) {
+if (items.length <= 16) return;
+// הסתר את הנוספות
+items.slice(16).addClass('mylisting-hidden-cat').hide();
+// צור כפתור אם לא קיים
+if (!container.find('.mylisting-show-more-btn').length) {
+var hiddenCount = items.length - 16;
+var btnText = 'הצג תחומי התמחות נוספים (' + hiddenCount + ')';
+var btn = $('<button class="mylisting-show-more-btn">' + btnText + '</button>');
+container.append(btn);
+btn.on('click', function(e) {
+e.preventDefault();
+var hidden = container.find('.mylisting-hidden-cat');
+if (hidden.is(':visible')) {
+hidden.fadeOut(200);
+$(this).text(btnText);
+} else {
+hidden.fadeIn(200);
+$(this).text('הצג פחות תחומי התמחות');
+}
+});
+}
+}
+// עבור עמודי רשימות ועמודים בודדים
+$('.listing-categories, .job_listing_category, .job-listing-category').each(function() {
+var container = $(this);
+var items = container.find('a, li');
+limitCategories(container, items);
+});
+// עבור ווידג'טים של Elementor
+$('.mylisting-category-widget, .elementor-widget-taxonomy, .elementor-widget-categories').each(function() {
+var widget = $(this);
+var items = widget.find('ul li, .category-item, a.category-link');
+// סנן רק פריטים עם תוכן
+items = items.filter(function() {
+return $(this).text().trim().length > 0;
+});
+if (items.length > 16) {
+items.slice(16).addClass('mylisting-hidden-cat').hide();
+if (!widget.find('.mylisting-show-more-btn').length) {
+var hiddenCount = items.length - 16;
+var btnText = 'הצג תחומי התמחות נוספים (' + hiddenCount + ')';
+var btn = $('<button class="mylisting-show-more-btn elementor-btn">' + btnText + '</button>');
+// מצא מקום מתאים לכפתור
+var targetContainer = widget.find('ul, .categories-container, nav').first();
+if (targetContainer.length) {
+targetContainer.after(btn);
+} else {
+widget.append(btn);
+}
+btn.on('click', function(e) {
+e.preventDefault();
+var hidden = widget.find('.mylisting-hidden-cat');
+if (hidden.is(':visible')) {
+hidden.fadeOut(200);
+$(this).text(btnText);
+} else {
+hidden.fadeIn(200);
+$(this).text('הצג פחות תחומי התמחות');
+}
+});
+}
+}
+});
+}
+// הפעל מיד
+setupCategoryLimits();
+// הפעל אחרי AJAX
+$(document).on('mylisting:ajax-loaded elementor/frontend/init', setupCategoryLimits);
+// תמיכה ב-Infinite Scroll
+if (window.IntersectionObserver) {
+var observer = new IntersectionObserver(function(entries) {
+entries.forEach(function(entry) {
+if (entry.isIntersecting) {
+setTimeout(setupCategoryLimits, 100);
+}
+});
+});
+$('.elementor-widget').each(function() {
+observer.observe(this);
+});
+}
+});
+//# sourceURL=jquery-js-after
+var breeze_prefetch = {"local_url":"https://haifakrayot.co.il/business","ignore_remote_prefetch":"1","ignore_list":["/business/cart","/business/checkout","/business/my-account","wp-admin","wp-login.php"]};
+//# sourceURL=breeze-prefetch-js-extra
+https://haifakrayot.co.il/business/wp-content/plugins/breeze/assets/js/js-front-end/breeze-prefetch-links.min.js
+https://haifakrayot.co.il/business/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.min.js
+https://haifakrayot.co.il/business/wp-content/plugins/woocommerce/assets/js/js-cookie/js.cookie.min.js
+var woocommerce_params = {"ajax_url":"/business/wp-admin/admin-ajax.php","wc_ajax_url":"/business/?wc-ajax=%%endpoint%%","i18n_password_show":"\u05dc\u05d4\u05e6\u05d9\u05d2 \u05e1\u05d9\u05e1\u05de\u05d4","i18n_password_hide":"\u05dc\u05d4\u05e1\u05ea\u05d9\u05e8 \u05e1\u05d9\u05e1\u05de\u05d4"};
+//# sourceURL=woocommerce-js-extra
+https://haifakrayot.co.il/business/wp-content/plugins/woocommerce/assets/js/frontend/woocommerce.min.js
+https://haifakrayot.co.il/business/wp-includes/js/underscore.min.js
+https://haifakrayot.co.il/business/wp-includes/js/backbone.min.js
+var wpApiSettings = {"root":"https://haifakrayot.co.il/business/wp-json/","nonce":"5dd5e1c194","versionString":"wp/v2/"};
+//# sourceURL=wp-api-request-js-extra
+https://haifakrayot.co.il/business/wp-includes/js/api-request.min.js
+https://haifakrayot.co.il/business/wp-includes/js/wp-api.min.js
+var wpdaApiSettings = {"path":"wpda"};
+//# sourceURL=wpda_rest_api-js-extra
+https://haifakrayot.co.il/business/wp-content/plugins/wp-data-access/public/../assets/js/wpda_rest_api.js
+https://haifakrayot.co.il/business/wp-content/plugins/elementor/assets/lib/font-awesome/js/v4-shims.min.js
+var MyListing = {"Helpers":{},"Handlers":{},"MapConfig":{"ClusterSize":35,"AccessToken":"AIzaSyBsP08LSH2Ok6z7OZDtKJn5OQfPnPlKcEo","Language":"iw","TypeRestrictions":"geocode","CountryRestrictions":["IL"],"CustomSkins":{}}};
+document.addEventListener('DOMContentLoaded', function() {
+document.querySelectorAll('.hk-show-more-btn').forEach(function(btn) {
+btn.addEventListener('click', function() {
+var targetId = this.dataset.target;
+var section = document.getElementById(targetId);
+if (!section) return;
+section.querySelectorAll('.hk-similar-card.hk-hidden').forEach(function(card) {
+card.classList.remove('hk-hidden');
+});
+this.style.display = 'none';
+});
+});
+});
+מוניות באזור חיפה והקריות מומלצים
+על פי ביקורות לקוחות בהצלבת חוות דעת, קולגות ומידע משפטי. האתר שיסייע לכם למצוא את נותני השירות הכי טובים מציג: מוניות באזור חיפה והקריות בסדר אקראי מעודכן לשנת 2026 - בהרצה
+911 המלצות על מוניות באזור חיפה והקריות - מה ניתן ללמוד מהן?
+רשימת מוניות באזור חיפה והקריות
+דלג על רשימת העסקים
+שירות מוניות אמין ומקצועי באזור הדר חיפה והסביבה
+מוניות באזור חיפה והקריות
+9.7
+★ 43 ביקורות
+שירות מוניות אמין ומקצועי באזור חיפה והקריות - זמינות מהירה בכל שעה
+מוניות באזור חיפה והקריות
+9.8
+★ 31 ביקורות
+סוכנות טיולים מקצועית בקרית אתא - ייעוץ והכוונה לטיולים בארץ ובעולם
+מוניות באזור חיפה והקריות
+1
+שירות מוניות בחיפה
+מוניות באזור חיפה והקריות
+★ 1 ביקורות
+6
+למידע נוסף
+2
+שירות מוניות בחיפה
+מוניות באזור חיפה והקריות
+למידע נוסף
+3
+תחנת מוניות בקרית מוצקין
+מוניות באזור חיפה והקריות
+למידע נוסף
+4
+שירות מוניות והסעות מקצועי בחיפה, טירת כרמל ואזור חוף הכרמל - זמינות 24/7
+מוניות באזור חיפה והקריות
+★ 8 ביקורות
+9.8
+למידע נוסף
+5
+מלון לשהייה ממושכת בחיפה - פתרון נוח ומעשי למגורים זמניים
+מוניות באזור חיפה והקריות
+★ 21 ביקורות
+9.1
+למידע נוסף
+6
+שירות מוניות בחיפה והקריות - נסיעות נוחות ובטוחות
+מוניות באזור חיפה והקריות
+★ 2 ביקורות
+10
+למידע נוסף
+7
+עוֹרֵך דִין בקרית ביאליק
+מוניות באזור חיפה והקריות
+★ 52 ביקורות
+10
+למידע נוסף
+8
+שירותי מוניות מהימנים בחיפה והקריות - נסיעות לנתב"ג ויעדים ארציים
+מוניות באזור חיפה והקריות
+★ 6 ביקורות
+10
+למידע נוסף
+9
+שירות מוניות אמין ומקצועי באזור עתלית והסביבה
+מוניות באזור חיפה והקריות
+למידע נוסף
+10
+שירות מוניות אמין ומקצועי בחיפה והקריות - זמינות מהירה בכל שעה
+מוניות באזור חיפה והקריות
+למידע נוסף
+11
+שירות מוניות בנשר
+מוניות באזור חיפה והקריות
+★ 5 ביקורות
+8
+למידע נוסף
+12
+תחנת מוניות בנשר
+מוניות באזור חיפה והקריות
+★ 3 ביקורות
+7.4
+למידע נוסף
+13
+שירות מוניות נגישות לאנשים עם מוגבלויות בחיפה והסביבה
+מוניות באזור חיפה והקריות
+למידע נוסף
+14
+שירות מוניות מהיר ואמין באזור הקריות וחיפה - זמינות 24/7
+מוניות באזור חיפה והקריות
+למידע נוסף
+15
+שירות מוניות ב62קריית ביאליק
+מוניות באזור חיפה והקריות
+למידע נוסף
+16
+שירות מוניות אמין ומקצועי בחיפה והקריות - זמינות מהירה בכל שעה
+מוניות באזור חיפה והקריות
+למידע נוסף
+17
+שירות מוניות בקריית ביאליק
+מוניות באזור חיפה והקריות
+למידע נוסף
+18
+שירות מוניות בחיפה
+מוניות באזור חיפה והקריות
+★ 29 ביקורות
+9.7
+למידע נוסף
+19
+שירות מוניות בחיפה
+מוניות באזור חיפה והקריות
+★ 23 ביקורות
+9.7
+למידע נוסף
+20
+שירות מוניות בחיפה
+מוניות באזור חיפה והקריות
+★ 82 ביקורות
+6
+למידע נוסף
+21
+שירות מוניות בחיפה
+מוניות באזור חיפה והקריות
+★ 1 ביקורות
+10
+למידע נוסף
+22
+שירות מוניות בחיפה
+מוניות באזור חיפה והקריות
+★ 1 ביקורות
+10
+למידע נוסף
+23
+שירות מוניות בחיפה
+מוניות באזור חיפה והקריות
+למידע נוסף
+24
+שירות מוניות בחיפה
+מוניות באזור חיפה והקריות
+למידע נוסף
+25
+שירות מוניות בחיפה
+מוניות באזור חיפה והקריות
+למידע נוסף
+26
+שירות מוניות בקרית מוצקין
+מוניות באזור חיפה והקריות
+למידע נוסף
+27
+תחנת מוניות בנשר
+מוניות באזור חיפה והקריות
+למידע נוסף
+28
+שירות מוניות בטירת כרמל
+מוניות באזור חיפה והקריות
+למידע נוסף
+29
+שירות מוניות בחיפה
+מוניות באזור חיפה והקריות
+למידע נוסף
+30
+שירות מוניות בטירת כרמל
+מוניות באזור חיפה והקריות
+למידע נוסף
+31
+תחנת מוניות בקרית ביאליק
+מוניות באזור חיפה והקריות
+★ 10 ביקורות
+9.4
+למידע נוסף
+32
+שירות מוניות בקרית מוצקין
+מוניות באזור חיפה והקריות
+למידע נוסף
+33
+שירות מוניות בטירת כרמל
+מוניות באזור חיפה והקריות
+למידע נוסף
+34
+תחנת מוניות בקרית ים
+מוניות באזור חיפה והקריות
+★ 1 ביקורות
+10
+למידע נוסף
+35
+שירות מוניות בחיפה
+מוניות באזור חיפה והקריות
+למידע נוסף
+36
+שירות מוניות בחיפה
+מוניות באזור חיפה והקריות
+למידע נוסף
+37
+שירות מוניות בקרית ביאליק
+מוניות באזור חיפה והקריות
+למידע נוסף
+38
+שירות מוניות בקרית טבעון
+מוניות באזור חיפה והקריות
+למידע נוסף
+39
+תחנת מוניות בחיפה
+מוניות באזור חיפה והקריות
+למידע נוסף
+40
+תחנת מוניות בחיפה
+מוניות באזור חיפה והקריות
+למידע נוסף
+41
+שירות מוניות בקרית ביאליק
+מוניות באזור חיפה והקריות
+למידע נוסף
+42
+תחנת מוניות בקרית ביאליק
+מוניות באזור חיפה והקריות
+למידע נוסף
+43
+תחנת מוניות בקרית ים
+מוניות באזור חיפה והקריות
+למידע נוסף
+44
+תחנת מוניות בחיפה
+מוניות באזור חיפה והקריות
+★ 6 ביקורות
+10
+למידע נוסף
+45
+תחנת מוניות בחיפה
+מוניות באזור חיפה והקריות
+★ 3 ביקורות
+10
+למידע נוסף
+46
+תחנת מוניות בחיפה
+מוניות באזור חיפה והקריות
+למידע נוסף
+47
+שירות מוניות בטירת כרמל
+מוניות באזור חיפה והקריות
+למידע נוסף
+48
+תחנת מוניות בחיפה
+מוניות באזור חיפה והקריות
+למידע נוסף
+49
+תחנת מוניות בחיפה
+מוניות באזור חיפה והקריות
+★ 10 ביקורות
+10
+למידע נוסף
+50
+שירות מוניות בחיפה
+מוניות באזור חיפה והקריות
+למידע נוסף
+תוצאות נוספות
+המלצות על מוניות באזור חיפה והקריות הכי טובים
+⚖️ עורכי דין ומשפט
+🍽️ מסעדות ואוכל
+🏠 נדל"ן ותיווך
+💅 יופי וטיפוח
+🔧 בית ושיפוצים
+🏥 בריאות ורפואה
+💼 שירותים לעסקים
+🚗 רכב ומוסכים
+🏃 כושר וספורט
+💰 ביטוח ופיננסים
+🛍️ חנויות וקניות
+🐾 חיות מחמד
+➕ עוד קטגוריות
+מוניות באזור חיפה והקריות - מידע נוסף
+תחום מוניות בקריות בישראל מציע מגוון רחב של שירותים ופתרונות מקצועיים המותאמים לצרכים השונים של הלקוחות. העסקים בתחום מתמחים במתן שירות איכותי תוך שימוש בטכנולוגיות מתקדמות וגישה מקצועית. השוק המקומי ...
+תחום מוניות בקריות בישראל מציע מגוון רחב של שירותים ופתרונות מקצועיים המותאמים לצרכים השונים של הלקוחות. העסקים בתחום מתמחים במתן שירות איכותי תוך שימוש בטכנולוגיות מתקדמות וגישה מקצועית. השוק המקומי מתפתח ומתחדש כל הזמן עם כניסת שחקנים חדשים ושירותים חדשניים. בעמוד זה תמצאו רשימה מקיפה של נותני שירות מומלצים, השוואת מחירים, ביקורות לקוחות ומידע מפורט על כל עסק….
+קרא עוד
+חיפה
+⚖️ עורכי דין ומשפט
+🍽️ מסעדות ואוכל
+🏠 נדל"ן ותיווך
+💅 יופי וטיפוח
+🔧 בית ושיפוצים
+🏥 בריאות ורפואה
+💼 שירותים לעסקים
+🚗 רכב ומוסכים
+🏃 כושר וספורט
+💰 ביטוח ופיננסים
+🛍️ חנויות וקניות
+🐾 חיות מחמד
+➕ עוד קטגוריות
+עכשיו בחדשות
+חדשות הקריות
+מצוינות בצל המלחמה: הוקרה לרופאי "מכבי" בצפון שעמדו בחזית השירות
+29 בינואר 2026
+חדשות הקריות
+"ידיד ואח בנשמה": קריית ים נפרדת מסגן ראש העיר ג'נו פלס שהלך לעולמו בגיל 72
+29 בינואר 2026
+חדשות חיפה
+האם "אימת השופטים" גרמה לעורכי הדין לשנות את הרגלי השימוש ב-AI? ספוילר: כן, אבל לא לכיוון שחשבתם
+28 בינואר 2026
+חדשות חיפה
+"נותרו רק 111,000": שמעון סבג טלטל את חיפה והעולם בטקס יום השואה הבינלאומי של "יד עזר לחבר"
+28 בינואר 2026
+טען עוד כתבות
+4
+מתוך 12889
+המידע בעמוד זה של חדשות חיפה והקריות ביזנס נערך ונכתב על ידי צוות כתבי האתר, המסקרים את תחום העסקים ובעלי המקצוע מזווית עיתונאית. אנו מנסים לדייק ככל הניתן במידע שידוע לנו אודות כל מוניות באזור חיפה והקריות. מצאתם פרט שגוי? דווחו לנו – ונתקן בהקדם
+בעמוד זה ריכזנו כתבות מערכת, חוות דעת, דירוגים, המלצות וגם תלונות צרכניות על מוניות באזור חיפה והקריות - במידה וישנן כמובן. לדוגמא פרסומים חריגים בתוכניות כמו "יצאת צדיק", "הצינור" או מהדורת החדשות משוקללים גם כן לאלגוריתם שלנו, על מנת לאפשר לגולשים לקבל תמונת מצב רחבה לפני בחירה. כמובן שגם אנו רק בני אדם אז במידה ונתקלתם בטעות לדעתכם - לפה או לפה - אנא דווחו לנו ונתקן בהקדם. אין לראות באמור כהמלצה או ייעוץ וואין המערכת אחראית על נותני השירות וכל פניה אליהם על אחריותכם בלבד.
+סל קניות
+תפריט נגישות
+close
+פתיחה וסגירה של תפריט הנגישות
+keyboard
+ניווט מקלדת
+visibility_off
+ביטול אנימציות / הבהובים
+nights_stay
+Contrast
+format_size
+הגדלת טקסט
+text_fields
+הקטנת טקסט
+font_download
+גופן קריא
+title
+סימון כותרות
+link
+סימון קישורים ולחצנים
+מופעל ב
+favorite
+אהבה
+ע״י
+עמית מורנו

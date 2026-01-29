@@ -1,0 +1,246 @@
+SOURCE_URL: https://haifakrayot.co.il/business/biz/44145
+--------------------------------------------------
+חברת מוניות נוה בעמ: ביקורות, המלצות ותמונות » מדד חיפה והקריות
+(function() {
+if (typeof jQuery === 'undefined') return;
+var $ = jQuery;
+var origHtml = $.fn.html;
+$.fn.html = function() {
+if (this.length === 0 && arguments.length === 0) return '';
+return origHtml.apply(this, arguments);
+};
+})();
+var hkbiz_ajax = {"url":"https://haifakrayot.co.il/business/wp-admin/admin-ajax.php","nonce":"5b406b3396"};
+//# sourceURL=jquery-core-js-extra
+https://haifakrayot.co.il/business/wp-includes/js/jquery/jquery.min.js
+jQuery(document).ready(function($) {
+function loadBadges() {
+// מצא את כל כרטיסי העסקים - רק ברשימות (לא בעמוד בודד)
+$('.lf-item, .listing-preview').each(function() {
+var card = $(this);
+if (card.data('badges-loaded')) return;
+card.data('badges-loaded', true);
+// מצא את ה-ID של העסק
+var link = card.find('a[href*="/biz/"]').first().attr('href');
+if (!link) return;
+var postId = card.data('id') || card.attr('data-id');
+// אם אין ID, ננסה למצוא דרך ה-link
+if (!postId) {
+$.ajax({
+url: 'https://haifakrayot.co.il/business/wp-admin/admin-ajax.php',
+type: 'POST',
+data: {
+action: 'get_listing_badges',
+url: link
+},
+success: function(response) {
+if (response.success && response.data.html) {
+// הוסף רק בתוך הכרטיס - מיקומים ספציפיים בלבד
+var logo = card.find('.lf-item-cover, .listing-preview-gallery, .lf-background, .listing-logo').first();
+var infoArea = card.find('.lf-item-info, .listing-info, .item-content').first();
+if (logo.length) {
+logo.after(response.data.html);
+} else if (infoArea.length) {
+infoArea.prepend(response.data.html);
+} else {
+card.prepend(response.data.html);
+}
+}
+}
+});
+}
+});
+}
+// טען בטעינת דף
+loadBadges();
+// טען גם אחרי AJAX (infinite scroll, filters, etc)
+$(document).ajaxComplete(function() {
+setTimeout(loadBadges, 500);
+});
+});jQuery(document).ready(function($) {
+function setupCategoryLimits() {
+// פונקציה להגבלת קטגוריות
+function limitCategories(container, items) {
+if (items.length <= 16) return;
+// הסתר את הנוספות
+items.slice(16).addClass('mylisting-hidden-cat').hide();
+// צור כפתור אם לא קיים
+if (!container.find('.mylisting-show-more-btn').length) {
+var hiddenCount = items.length - 16;
+var btnText = 'הצג תחומי התמחות נוספים (' + hiddenCount + ')';
+var btn = $('<button class="mylisting-show-more-btn">' + btnText + '</button>');
+container.append(btn);
+btn.on('click', function(e) {
+e.preventDefault();
+var hidden = container.find('.mylisting-hidden-cat');
+if (hidden.is(':visible')) {
+hidden.fadeOut(200);
+$(this).text(btnText);
+} else {
+hidden.fadeIn(200);
+$(this).text('הצג פחות תחומי התמחות');
+}
+});
+}
+}
+// עבור עמודי רשימות ועמודים בודדים
+$('.listing-categories, .job_listing_category, .job-listing-category').each(function() {
+var container = $(this);
+var items = container.find('a, li');
+limitCategories(container, items);
+});
+// עבור ווידג'טים של Elementor
+$('.mylisting-category-widget, .elementor-widget-taxonomy, .elementor-widget-categories').each(function() {
+var widget = $(this);
+var items = widget.find('ul li, .category-item, a.category-link');
+// סנן רק פריטים עם תוכן
+items = items.filter(function() {
+return $(this).text().trim().length > 0;
+});
+if (items.length > 16) {
+items.slice(16).addClass('mylisting-hidden-cat').hide();
+if (!widget.find('.mylisting-show-more-btn').length) {
+var hiddenCount = items.length - 16;
+var btnText = 'הצג תחומי התמחות נוספים (' + hiddenCount + ')';
+var btn = $('<button class="mylisting-show-more-btn elementor-btn">' + btnText + '</button>');
+// מצא מקום מתאים לכפתור
+var targetContainer = widget.find('ul, .categories-container, nav').first();
+if (targetContainer.length) {
+targetContainer.after(btn);
+} else {
+widget.append(btn);
+}
+btn.on('click', function(e) {
+e.preventDefault();
+var hidden = widget.find('.mylisting-hidden-cat');
+if (hidden.is(':visible')) {
+hidden.fadeOut(200);
+$(this).text(btnText);
+} else {
+hidden.fadeIn(200);
+$(this).text('הצג פחות תחומי התמחות');
+}
+});
+}
+}
+});
+}
+// הפעל מיד
+setupCategoryLimits();
+// הפעל אחרי AJAX
+$(document).on('mylisting:ajax-loaded elementor/frontend/init', setupCategoryLimits);
+// תמיכה ב-Infinite Scroll
+if (window.IntersectionObserver) {
+var observer = new IntersectionObserver(function(entries) {
+entries.forEach(function(entry) {
+if (entry.isIntersecting) {
+setTimeout(setupCategoryLimits, 100);
+}
+});
+});
+$('.elementor-widget').each(function() {
+observer.observe(this);
+});
+}
+});
+//# sourceURL=jquery-js-after
+var breeze_prefetch = {"local_url":"https://haifakrayot.co.il/business","ignore_remote_prefetch":"1","ignore_list":["/business/cart","/business/checkout","/business/my-account","wp-admin","wp-login.php"]};
+//# sourceURL=breeze-prefetch-js-extra
+https://haifakrayot.co.il/business/wp-content/plugins/breeze/assets/js/js-front-end/breeze-prefetch-links.min.js
+https://haifakrayot.co.il/business/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.min.js
+https://haifakrayot.co.il/business/wp-content/plugins/woocommerce/assets/js/js-cookie/js.cookie.min.js
+var woocommerce_params = {"ajax_url":"/business/wp-admin/admin-ajax.php","wc_ajax_url":"/business/?wc-ajax=%%endpoint%%","i18n_password_show":"\u05dc\u05d4\u05e6\u05d9\u05d2 \u05e1\u05d9\u05e1\u05de\u05d4","i18n_password_hide":"\u05dc\u05d4\u05e1\u05ea\u05d9\u05e8 \u05e1\u05d9\u05e1\u05de\u05d4"};
+//# sourceURL=woocommerce-js-extra
+https://haifakrayot.co.il/business/wp-content/plugins/woocommerce/assets/js/frontend/woocommerce.min.js
+https://haifakrayot.co.il/business/wp-includes/js/underscore.min.js
+https://haifakrayot.co.il/business/wp-includes/js/backbone.min.js
+var wpApiSettings = {"root":"https://haifakrayot.co.il/business/wp-json/","nonce":"5dd5e1c194","versionString":"wp/v2/"};
+//# sourceURL=wp-api-request-js-extra
+https://haifakrayot.co.il/business/wp-includes/js/api-request.min.js
+https://haifakrayot.co.il/business/wp-includes/js/wp-api.min.js
+var wpdaApiSettings = {"path":"wpda"};
+//# sourceURL=wpda_rest_api-js-extra
+https://haifakrayot.co.il/business/wp-content/plugins/wp-data-access/public/../assets/js/wpda_rest_api.js
+https://haifakrayot.co.il/business/wp-content/plugins/elementor/assets/lib/font-awesome/js/v4-shims.min.js
+document.addEventListener('DOMContentLoaded', function() {
+// הסתר אלמנטים עם טקסט ריק או רק רווחים
+document.querySelectorAll('.listing-section, .profile-field, .block-wrapper, .info-box').forEach(function(el) {
+var text = el.textContent.trim();
+var hasImages = el.querySelectorAll('img').length > 0;
+var hasLinks = el.querySelectorAll('a[href]:not([href=""]):not([href="tel:"]):not([href="mailto:"])').length > 0;
+var hasContent = el.querySelectorAll('.value:not(:empty), .pf-body:not(:empty)').length > 0;
+// אם אין תוכן משמעותי - הסתר
+if (!text && !hasImages && !hasLinks && !hasContent) {
+el.style.display = 'none';
+}
+});
+// הסתר שדות ספציפיים ריקים
+document.querySelectorAll('[data-field]').forEach(function(el) {
+var value = el.querySelector('.value, .pf-body');
+if (value && !value.textContent.trim()) {
+el.style.display = 'none';
+}
+});
+// הסתר פרטי קשר ריקים
+document.querySelectorAll('.contact-method, .listing-detail').forEach(function(el) {
+var link = el.querySelector('a');
+if (link) {
+var href = link.getAttribute('href') || '';
+if (!href || href === 'tel:' || href === 'mailto:' || href === '#') {
+el.style.display = 'none';
+}
+}
+});
+// הסתר סקשנים שכל הילדים שלהם מוסתרים
+document.querySelectorAll('.listing-section, .profile-section').forEach(function(section) {
+var visibleChildren = section.querySelectorAll(':scope > *:not([style*="display: none"]):not([style*="display:none"])');
+var hasVisibleContent = false;
+visibleChildren.forEach(function(child) {
+if (child.offsetHeight > 0 && child.textContent.trim()) {
+hasVisibleContent = true;
+}
+});
+if (!hasVisibleContent) {
+section.style.display = 'none';
+}
+});
+});
+var MyListing = {"Helpers":{},"Handlers":{},"MapConfig":{"ClusterSize":35,"AccessToken":"AIzaSyBsP08LSH2Ok6z7OZDtKJn5OQfPnPlKcEo","Language":"iw","TypeRestrictions":"geocode","CountryRestrictions":["IL"],"CustomSkins":{}}};
+document.addEventListener('DOMContentLoaded', function() {
+document.querySelectorAll('.hk-show-more-btn').forEach(function(btn) {
+btn.addEventListener('click', function() {
+var targetId = this.dataset.target;
+var section = document.getElementById(targetId);
+if (!section) return;
+section.querySelectorAll('.hk-similar-card.hk-hidden').forEach(function(card) {
+card.classList.remove('hk-hidden');
+});
+this.style.display = 'none';
+});
+});
+});
+סל קניות
+תפריט נגישות
+close
+פתיחה וסגירה של תפריט הנגישות
+keyboard
+ניווט מקלדת
+visibility_off
+ביטול אנימציות / הבהובים
+nights_stay
+Contrast
+format_size
+הגדלת טקסט
+text_fields
+הקטנת טקסט
+font_download
+גופן קריא
+title
+סימון כותרות
+link
+סימון קישורים ולחצנים
+מופעל ב
+favorite
+אהבה
+ע״י
+עמית מורנו
