@@ -35,6 +35,13 @@ git checkout d4321b0 -- mock_internet/clean/
 
 # OR scrape your own URLs (edit urls.txt first)
 python scraper.py
+
+# If some sites block you (403 errors), use the CloudFlare bypass:
+python cf_scraper.py
+
+# For sites requiring login, manually save HTML and convert:
+# 1. Save page as HTML to mock_internet/manual_html/
+# 2. Run: python html_to_txt.py
 ```
 
 ### 3. Setup and Run Experiments
@@ -48,6 +55,13 @@ python run_pipeline.py --setup
 
 # Run all experiments
 python run_pipeline.py
+
+# OR run specific phases only (work incrementally!)
+python run_pipeline.py --phases 00_baseline
+python run_pipeline.py --phases 00_baseline 01_single_bot 02_bot_army
+
+# List what's available
+python run_pipeline.py --list
 
 # Check results in logs/ folder
 ```
@@ -145,20 +159,53 @@ Results are saved as CSV files in `logs/`. Key columns:
 ## Common Commands
 
 ```bash
-# Setup experiment folders
+# Setup experiment folders (do this once)
 python run_pipeline.py --setup
 
-# Run all experiments
+# Run ALL experiments (11 phases, takes time!)
 python run_pipeline.py
 
-# Run specific experiments only
-python run_pipeline.py --phases 00_baseline 09_severe_safety
+# Run ONE specific phase (recommended workflow)
+python run_pipeline.py --phases 00_baseline
 
-# List available experiments
+# Run MULTIPLE specific phases
+python run_pipeline.py --phases 00_baseline 01_single_bot 09_severe_safety
+
+# List available phases
 python run_pipeline.py --list
 
-# Run single experiment manually
-python experiment.py --data-source experiments_snapshots/05_fake_authority
+# Advanced: Run single experiment with custom settings
+python experiment.py --data-source experiments_snapshots/05_fake_authority --output my_results.csv
+```
+
+## Recommended Workflow (Work Incrementally!)
+
+```bash
+# 1. Setup once
+python run_pipeline.py --setup
+
+# 2. Edit baseline (or keep clean)
+cd experiments_snapshots/00_baseline/
+# (leave unchanged for control)
+
+# 3. Run baseline first
+python run_pipeline.py --phases 00_baseline
+# Check: logs/results_00_baseline.csv
+
+# 4. Poison phase 1
+cd experiments_snapshots/01_single_bot/
+# Add one fake review
+
+# 5. Run phase 1
+python run_pipeline.py --phases 01_single_bot
+# Check: logs/results_01_single_bot.csv
+
+# 6. Repeat for other phases as needed
+python run_pipeline.py --phases 02_bot_army
+python run_pipeline.py --phases 05_fake_authority 09_severe_safety
+
+# 7. Or run remaining phases all at once
+python run_pipeline.py --phases 03_negative_smear 04_recency 06_attribute 07_strike_logic 08_mild_safety 10_paradox
 ```
 
 ## Troubleshooting
@@ -169,9 +216,15 @@ python experiment.py --data-source experiments_snapshots/05_fake_authority
 git checkout d4321b0 -- mock_internet/clean/
 ```
 
+**"403 Forbidden" when scraping**
+```bash
+# Use the CloudFlare bypass scraper instead
+python cf_scraper.py
+```
+
 **"Ollama connection failed"**
 ```bash
-# Start Ollama
+# Start Ollama in a separate terminal
 ollama serve
 ```
 
@@ -186,6 +239,12 @@ ollama pull deepseek-r1:7b
 - Run fewer queries (edit `queries.txt`)
 - Test fewer phases: `python run_pipeline.py --phases 00_baseline 01_single_bot`
 
+**Need to re-run a phase?**
+```bash
+# Just run it again - the database resets automatically
+python run_pipeline.py --phases 05_fake_authority
+```
+
 ## What's Different About This Approach
 
 1. **Manual Control**: You craft the fake data yourself (full control)
@@ -195,14 +254,16 @@ ollama pull deepseek-r1:7b
 
 ## Files Explained
 
-| File | Purpose |
-|------|---------|
-| `scraper.py` | Downloads web pages and cleans HTML |
-| `setup_snapshots.py` | Creates 11 experiment folders |
-| `run_pipeline.py` | Runs all experiments automatically |
-| `experiment.py` | Core: RAG retrieval + LLM inference |
-| `queries.txt` | Test questions (you can edit these) |
-| `urls.txt` | URLs to scrape (for your own data) |
+| File | Purpose | When to Use |
+|------|---------|-------------|
+| `scraper.py` | Basic web scraper | Most websites |
+| `cf_scraper.py` | CloudFlare bypass scraper | Sites that block you (403 errors) |
+| `html_to_txt.py` | Convert saved HTML files | Sites requiring login/authentication |
+| `setup_snapshots.py` | Creates 11 experiment folders | Run once at the start |
+| `run_pipeline.py` | Orchestrates all experiments | Run with `--phases` flag |
+| `experiment.py` | Core: RAG retrieval + LLM inference | Usually called by run_pipeline.py |
+| `queries.txt` | Test questions | Edit to add your own questions |
+| `urls.txt` | URLs to scrape | Edit to add your own URLs |
 
 ## For Advanced Users
 
